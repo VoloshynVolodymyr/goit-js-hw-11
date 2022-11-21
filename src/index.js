@@ -49,7 +49,7 @@ function onbtnLoadMoreClick(){
   getMarkupfromRequest(query, currentPage, success).
   then((markup)=>{boxGallery.insertAdjacentHTML('beforeend', markup);
   lightBox.refresh();
-  smoothScroll()
+  smoothScroll();
 });
 
  }
