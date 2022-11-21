@@ -5,7 +5,7 @@ const API_KEY = '30807172-c123f2518b79ce33b2191dfa5';
 
 
 
-export default function getMarkup(query, currentPage){
+export default function getMarkupfromRequest(query, currentPage, success){
     let markup = '';
            const searchParams = new URLSearchParams({
             key: API_KEY,
@@ -16,10 +16,13 @@ export default function getMarkup(query, currentPage){
             orientation:"horizontal",
             safesearch: "true",
         })
-        return axios.get(`${BASE_URL}?${searchParams}`).then(({data:{hits}}) =>{
+        return axios.get(`${BASE_URL}?${searchParams}`).then(({data:{hits, totalHits}}) =>{
             if (hits.length===0) {
                 Notify.failure('Sorry, there are no images matching your search query. Please try again.');
             return ""}
+            if (success) {
+              Notify.success(`Hooray! We found ${totalHits} images.`)
+            }
                 hits.map(({webformatURL, largeImageURL, likes, views, comments, downloads, tags}) => 
         markup = markup + `<div class="photo-card">
         <a class="photo-link" href=${largeImageURL}>
@@ -31,21 +34,24 @@ export default function getMarkup(query, currentPage){
         />
         </a>
         <div class="info">
+          <div>
           <p class="info-item">
             <b>Likes: ${likes}</b>
           </p>
           <p class="info-item">
             <b>Views: ${views}</b>
           </p>
+          </div>
+          <div>
           <p class="info-item">
             <b>Comments: ${comments}</b>
           </p>
           <p class="info-item">
             <b>Downloads: ${downloads}</b>
           </p>
+          </div>
         </div>
       </div>`)
      return markup;
-    });
-    
+    })
 }
